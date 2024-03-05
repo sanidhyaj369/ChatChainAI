@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LangChain Flask App</title>
+</head>
+<body>
+    <h1>LangChain Flask App</h1>
+    <form id="promptForm" action="/generate_response" method="post">
+        <label for="prompt">Enter Prompt:</label>
+        <input type="text" id="prompt" name="prompt" required>
+        <button type="submit">Generate Response</button>
+    </form>
+    <div id="response"></div>
+
+    <script>
+        document.getElementById('promptForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            var prompt = document.getElementById('prompt').value;
+
+            fetch('/generate_response', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams({ 'prompt': prompt }),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    // Access the 'response' and 'sentiment' properties of the response JSON
+                    var responseValue = data.response;
+                    var sentiment = data.sentiment;
+
+                    // Update the content of the 'response' div
+                    document.getElementById('response').innerHTML = '<strong>Bot:</strong> ' + responseValue + '<br><strong>Sentiment:</strong> ' + sentiment;
+                });
+        });
+    </script>
+</body>
+</html>
